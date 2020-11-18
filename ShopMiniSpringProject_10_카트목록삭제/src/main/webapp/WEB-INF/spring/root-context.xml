@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans https://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.3.xsd">
+	<!-- 1.jdbc.properties -->
+	<context:property-placeholder location="classpath:com/config/jdbc.properties"/>
+	<!-- 2.DBCP2 -->
+	<bean id="dataSource" class="org.apache.commons.dbcp2.BasicDataSource">
+		<property name="driverClassName" value="${oracle.jdbc}"></property>
+		<property name="url" value="${oracle.url}"></property>
+		<property name="username" value="${oracle.userid}"></property>
+		<property name="password" value="${oracle.passwd}"></property>
+	</bean>
+	<!--3.SqlSessionFactoryBean  -->
+	<bean id="sessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+		<property name="dataSource" ref="dataSource"></property>
+		<property name="mapperLocations">
+			<list>
+				<value>classpath:com/config/CartMapper.xml</value>
+				<value>classpath:com/config/GoodsMapper.xml</value>
+				<value>classpath:com/config/MemberMapper.xml</value>				
+			</list>		
+		</property>
+		<property name="typeAliases">
+			<list>
+				<value>com.dto.CartDTO</value>
+				<value>com.dto.GoodsDTO</value>
+				<value>com.dto.MemberDTO</value>
+				<value>com.dto.OrderDTO</value>				
+			</list>		
+		</property>
+	</bean>	
+	<!-- 4. SqlSessionTemplate : SqlSession기능 -->
+	<bean id="sqlSessionTemplate" class="org.mybatis.spring.SqlSessionTemplate">
+		<constructor-arg name="sqlSessionFactory" ref="sessionFactory"></constructor-arg>
+	</bean>
+	<!-- 종료 -->
+</beans>

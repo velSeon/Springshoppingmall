@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration
+PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+
+	<!-- jdbc.properties등록 -->
+	<properties resource="com/config/jdbc.properties"></properties>
+	
+	<!-- type Alias -->
+	<typeAliases>
+	   <typeAlias type="com.dto.MemberDTO" alias="MemberDTO"/>
+	   <typeAlias type="com.dto.GoodsDTO" alias="GoodsDTO"/>
+	   <typeAlias type="com.dto.CartDTO" alias="CartDTO"/>
+	   <typeAlias type="com.dto.OrderDTO" alias="OrderDTO"/>
+	</typeAliases>
+	
+	<environments default="development">
+		<environment id="development">
+			<transactionManager type="JDBC" />
+			<dataSource type="POOLED">
+				<property name="driver" value="${oracle.jdbc}" />
+				<property name="url" value="${oracle.url}" />
+				<property name="username" value="${oracle.userid}" />
+				<property name="password" value="${oracle.passwd}" />
+			</dataSource>
+		</environment>
+	</environments>
+	<mappers>
+		<mapper resource="com/config/MemberMapper.xml" />
+		<mapper resource="com/config/GoodsMapper.xml" />
+		<mapper resource="com/config/CartMapper.xml" />
+	</mappers>
+</configuration>
+

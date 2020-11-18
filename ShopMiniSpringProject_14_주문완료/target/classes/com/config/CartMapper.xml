@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="CartMapper">
+<!-- create or replace function myorderseq
+return NUMBER
+is
+begin
+   return orderInfo_seq.nextval;
+end;
+/ -->
+<insert id="orderAllDone" parameterType="arraylist">
+	  insert all
+	  <foreach item="item" index="index" collection="list">
+		into orderinfo	
+		    (num,userid,gCode,gName,gPrice,gSize,gColor,gAmount,
+ 			 gImage,orderName,post,addr1,addr2,phone,payMethod)
+       values( myorderseq(), #{item.userid},#{item.gCode},
+       #{item.gName},#{item.gPrice},#{item.gSize},
+       #{item.gColor},#{item.gAmount},
+              #{item.gImage},#{item.orderName},
+              #{item.post},#{item.addr1},#{item.addr2},
+              #{item.phone},#{item.payMethod})
+	</foreach>
+	  select *
+	  from dual
+	</insert>
+
+<select id="orderAllConfirm" parameterType="arraylist" 
+	resultType="CartDTO">
+	 select num,userid,gCode,gSize,gPrice,gColor,gAmount,gName,gImage
+	 from cart
+	 where num
+	 IN
+	 <foreach item="item" index="index" collection="list" open="("
+			separator="," close=")">
+			#{item}
+	 </foreach>
+	</select>
+
+<insert id="orderDone" parameterType="OrderDTO">
+ insert into orderinfo 
+ (num,userid,gCode,gName,gPrice,gSize,gColor,gAmount,
+ 			 gImage,orderName,post,addr1,addr2,phone,payMethod)
+ values( orderInfo_seq.nextval, #{userid},#{gCode},#{gName},#{gPrice},
+               #{gSize},#{gColor},#{gAmount},
+              #{gImage},#{orderName},#{post},#{addr1},#{addr2},#{phone},#{payMethod})
+</insert>
+
+  <delete id="cartAllDel" parameterType="arraylist">
+	  delete
+	  from cart
+	  where num IN 
+	  <foreach item="item" index="index" collection="list" open="("
+			separator="," close=")">
+			#{item}
+		</foreach>
+	</delete>
+	
+	
+	<delete id="cartDel" parameterType="int">
+		delete from cart
+		where num=#{num}
+	</delete>
+
+	<update id="cartUpdate" parameterType="hashmap">
+	 update cart
+	 set gAmount= #{gAmount}
+	 where num=#{num}
+	</update>
+	
+	
+	<insert id="cartAdd" parameterType="CartDTO">
+		insert into cart (num,userid,gCode,gPrice,
+		        gSize,gColor,gAmount,gName,gImage)
+		values( cart_seq.nextval, #{userid},#{gCode},#{gPrice},
+		        #{gSize},#{gColor},#{gAmount},#{gName},#{gImage} )
+	</insert>
+	
+	<select id="cartList" parameterType="string" 
+	resultType="CartDTO">
+	 select num,userid,gCode,gSize,gPrice,gColor,gAmount,gName,gImage
+	 from cart
+	 where userid=#{userid}
+	</select>
+	
+	<select id="cartByNum" parameterType="int" 
+	resultType="CartDTO">
+	 select num,userid,gCode,gSize,gPrice,gColor,gAmount,gName,gImage
+	 from cart
+	 where num=#{num}
+	</select>
+</mapper>
